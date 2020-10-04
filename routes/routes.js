@@ -10,14 +10,36 @@ module.exports = (app, passport) => {
     // LOGIN ===============================
     // =====================================
     // process the login form
-    app.post(
-        "/login",
-        passport.authenticate("local-login", {
-            successRedirect: "/profile", // redirect to the secure profile section
-            failureRedirect: "/login", // redirect back to the signup page if there is an error
-            failureFlash: true, // allow flash messages
-        })
-    );
+    app.post("/login", passport.authenticate("local-login"), (req, res) => {
+        console.log("message: ", req.flash("loginMessage"));
+        const isAuthenticated = req.isAuthenticated();
+        if (!req.user || !isAuthenticated) {
+            res.json({
+                status: 400,
+                messages: req.flash("loginMessage"),
+                isAuthenticated
+            });
+            return;
+        }
+        User.findOne({ "local.email": req.user.local.email })
+            .populate("movies")
+            .then(user =>
+                res.json({
+                    status: 200,
+                    messages: req.flash("loginMessage"),
+                    movies: user.movies,
+                    user: user.local.email,
+                    isAuthenticated
+                })
+            )
+            .catch(() =>
+                res.json({
+                    status: 400,
+                    messages: "An error occurred, please try again later",
+                    isAuthenticated
+                })
+            );
+    });
 
     // =====================================
     // SIGNUP ==============================
@@ -34,7 +56,7 @@ module.exports = (app, passport) => {
         passport.authenticate("local-signup", {
             successRedirect: "/profile", // redirect to the secure profile section
             failureRedirect: "/signup", // redirect back to the signup page if there is an error
-            failureFlash: true, // allow flash messages
+            failureFlash: true // allow flash messages
         })
     );
 
@@ -49,7 +71,7 @@ module.exports = (app, passport) => {
             .then(user =>
                 res.render("profile", {
                     movies: user.movies,
-                    user: user.local.email,
+                    user: user.local.email
                 })
             )
             .catch(err => res.json(err));
@@ -62,7 +84,7 @@ module.exports = (app, passport) => {
     app.get(
         "/auth/facebook",
         passport.authenticate("facebook", {
-            scope: ["public_profile", "email"],
+            scope: ["public_profile", "email"]
         })
     );
 
@@ -71,7 +93,7 @@ module.exports = (app, passport) => {
         "/auth/facebook/callback",
         passport.authenticate("facebook", {
             successRedirect: "/profile",
-            failureRedirect: "/",
+            failureRedirect: "/"
         })
     );
 
@@ -89,7 +111,7 @@ module.exports = (app, passport) => {
         passport.authenticate("local-signup", {
             successRedirect: "/profile", // redirect to the secure profile section
             failureRedirect: "/connect/local", // redirect back to the signup page if there is an error
-            failureFlash: true, // allow flash messages
+            failureFlash: true // allow flash messages
         })
     );
 
@@ -99,7 +121,7 @@ module.exports = (app, passport) => {
     app.get(
         "/connect/facebook",
         passport.authorize("facebook", {
-            scope: ["public_profile", "email"],
+            scope: ["public_profile", "email"]
         })
     );
 
@@ -108,7 +130,7 @@ module.exports = (app, passport) => {
         "/connect/facebook/callback",
         passport.authorize("facebook", {
             successRedirect: "/profile",
-            failureRedirect: "/",
+            failureRedirect: "/"
         })
     );
 
@@ -134,7 +156,7 @@ module.exports = (app, passport) => {
         let newMovie = new Movie({
             movie_name: req.body.movie_name,
             addedAt: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
-            watchedAt: "",
+            watchedAt: ""
         });
         Movie.create(newMovie)
             .then(result => {

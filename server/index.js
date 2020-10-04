@@ -5,9 +5,14 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const passport = require("passport");
 const flash = require("connect-flash");
+const bodyParser = require("body-parser");
 const database = require("../config/database");
 const { Nuxt, Builder } = require("nuxt");
 const app = express();
+
+//setting up body parser middleware to handle post requests
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Import and Set Nuxt.js options
 const config = require("../nuxt.config.js");
@@ -20,7 +25,7 @@ mongoose.Promise = Promise;
 mongoose
     .connect(config.MONGODB_URI, {
         useNewUrlParser: true,
-        useUnifiedTopology: true,
+        useUnifiedTopology: true
     })
     .then(result => {
         console.log(
@@ -32,7 +37,7 @@ mongoose
 // Configure mongo store ================================================================
 const store = new MongoDBStore({
     uri: config.database,
-    collection: "sessions",
+    collection: "sessions"
 });
 
 store.on("error", function(error) {
@@ -64,7 +69,7 @@ async function start() {
             cookie: { maxAge: 24 * 60 * 60 * 1000 },
             resave: true,
             saveUninitialized: false,
-            store: store,
+            store: store
         })
     ); // session secret
     app.use(passport.initialize());
@@ -80,7 +85,7 @@ async function start() {
     app.listen(port, host);
     consola.ready({
         message: `Server listening on http://${host}:${port}`,
-        badge: true,
+        badge: true
     });
 }
 start();

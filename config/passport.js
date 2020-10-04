@@ -29,10 +29,9 @@ module.exports = passport => {
             {
                 usernameField: "email",
                 passwordField: "password",
-                passReqToCallback: true, // allows us to pass back the entire request to the callback
+                passReqToCallback: true // allows us to pass back the entire request to the callback
             },
             (req, email, password, done) => {
-                console.log("firing inside local");
                 process.nextTick(() => {
                     User.findOne({ "local.email": email }, (err, user) => {
                         if (err) return done(err);
@@ -77,7 +76,7 @@ module.exports = passport => {
             {
                 usernameField: "email",
                 passwordField: "password",
-                passReqToCallback: true, // allows us to pass back the entire request to the callback
+                passReqToCallback: true // allows us to pass back the entire request to the callback
             },
             (req, email, password, done) => {
                 // callback with email and password from our form
