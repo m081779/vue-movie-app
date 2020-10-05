@@ -1,12 +1,17 @@
-@import url('https://fonts.googleapis.com/css?family=Quicksand');
+@import url("https://fonts.googleapis.com/css?family=Quicksand");
 
 body {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    background-image: url('../img/background.jpg');
+    background-image: url("../img/background.jpg");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-attachment: fixed;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 16px;
 }
 
 #landing-page-container {
@@ -46,7 +51,7 @@ body {
     height: 12vh;
     width: 12vh;
     font-size: 50px;
-    font-family: 'times new roman';
+    font-family: "times new roman";
     font-weight: bold;
     line-height: 12vh;
 }
@@ -119,9 +124,9 @@ body {
     margin: 15px;
     line-height: 36px;
     font-size: 26px;
-    font-family: 'Nothing You Could Do', cursive;
+    font-family: "Nothing You Could Do", cursive;
     padding-left: 15px;
-    border: 3px solid #A80000;
+    border: 3px solid #a80000;
 }
 
 img {
@@ -149,12 +154,12 @@ header {
 
 .sectionTitle {
     background: orange;
-    border: 3px solid #A80000;
+    border: 3px solid #a80000;
     padding: 5px;
     border-radius: 3px;
     width: 50%;
     margin: 5px auto;
-    font-family: 'Bigelow Rules', cursive;
+    font-family: "Bigelow Rules", cursive;
     font-size: 50px;
 }
 
@@ -163,29 +168,24 @@ header {
     margin: 0 0 0 50px;
     font-size: 70px;
     font-weight: bold;
-    font-family: 'Bigelow Rules', cursive;
+    font-family: "Bigelow Rules", cursive;
     text-shadow: 3px 3px rgba(0, 0, 0, 1);
     letter-spacing: 3px;
-    text-shadow: 1px 1px 0px #A80000,
-        2px 2px 0px #A80000,
-        3px 3px 0px #A80000,
-        4px 4px 0px #A80000,
-        5px 5px 0px #A80000,
-        6px 6px 0px #A80000,
-        7px 7px 0px #A80000,
-        8px 8px 3px rgba(255, 255, 255, 0.6);
+    text-shadow: 1px 1px 0px #a80000, 2px 2px 0px #a80000, 3px 3px 0px #a80000,
+        4px 4px 0px #a80000, 5px 5px 0px #a80000, 6px 6px 0px #a80000,
+        7px 7px 0px #a80000, 8px 8px 3px rgba(255, 255, 255, 0.6);
 }
 
 #submit {
-    background: #A80000;
+    background: #a80000;
     margin-bottom: 10px;
-    font-family: 'Bigelow Rules', cursive;
+    font-family: "Bigelow Rules", cursive;
     font-size: 40px;
     padding: 0;
 }
 
 .watch {
-    background: #A80000;
+    background: #a80000;
     font-size: 18px;
 }
 
@@ -209,7 +209,7 @@ header {
     font-size: 26px;
     font-style: italic;
     color: white;
-    font-family: 'Nothing You Could Do', cursive;
+    font-family: "Nothing You Could Do", cursive;
     font-weight: 600;
     letter-spacing: 2px;
 }
@@ -225,12 +225,12 @@ header {
     background: white;
     margin-bottom: 20px;
     border-radius: 10px;
-    border: 2px solid #A80000;
+    border: 2px solid #a80000;
 }
 
 .bubble:after {
     position: absolute;
-    content: ' ';
+    content: " ";
     height: 0px;
     width: 0px;
     top: 96%;
@@ -245,14 +245,14 @@ header {
 
 .bubble:before {
     position: absolute;
-    content: ' ';
+    content: " ";
     height: 0px;
     width: 0px;
     top: 100%;
     left: 50%;
     -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
-    border-top: 20px solid #A80000;
+    border-top: 20px solid #a80000;
     border-right: 20px solid transparent;
     border-bottom: 20px solid transparent;
     border-left: 20px solid transparent;
@@ -274,7 +274,6 @@ header {
     overflow: hidden;
 }
 
-
 textarea:focus {
     outline: none;
 }
@@ -293,14 +292,13 @@ textarea::-moz-placeholder {
     cursor: pointer;
 }
 
-
 /************************movieModal CSS************************/
 
 #movieModal {
     width: 70%;
     min-height: 50vh;
     background: orange;
-    border: 4px solid #A80000;
+    border: 4px solid #a80000;
     display: none;
     position: fixed;
     top: 50%;
@@ -308,7 +306,7 @@ textarea::-moz-placeholder {
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     padding: 30px 0px;
-    color: #A80000;
+    color: #a80000;
 }
 
 .close {
@@ -342,7 +340,7 @@ li {
     font-size: 18px;
     background: tan;
     padding: 15px;
-    border-radius: 5px
+    border-radius: 5px;
 }
 
 #trailer {
@@ -353,12 +351,10 @@ li {
 #nextButton {
     width: 60%;
     margin: 0 auto;
-    background: #A80000;
+    background: #a80000;
 }
 
-
 /******************** neon css ********************/
-
 
 .neon {
     text-decoration: none;
@@ -370,7 +366,7 @@ li {
     font-size: 3em;
     margin: 0;
     padding: 0 20px;
-    font-family: 'Quicksand', sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-weight: bold;
     text-shadow: 0 0 20px #ff005b;
 }
@@ -381,7 +377,7 @@ li {
 }
 
 .neon:after {
-    content: 'EXIT';
+    content: "EXIT";
     color: #ff005b;
     position: absolute;
     padding: 0 20px;
@@ -392,7 +388,7 @@ li {
 }
 
 .neon:before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;

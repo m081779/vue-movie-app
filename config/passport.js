@@ -80,26 +80,26 @@ module.exports = passport => {
             },
             (req, email, password, done) => {
                 // callback with email and password from our form
-
-                User.findOne({ "local.email": email }, (err, user) => {
-                    if (err) return done(err);
-
-                    if (!user)
-                        return done(
-                            null,
-                            false,
-                            req.flash("loginMessage", "No user found.")
-                        );
-
-                    if (!user.validPassword(password))
-                        return done(
-                            null,
-                            false,
-                            req.flash("loginMessage", "Oops! Wrong password.")
-                        );
-
-                    return done(null, user);
-                });
+                try {
+                    User.findOne({ "local.email": email }, (err, user) => {
+                        if (err) return done(err);
+                        console.log("getting here 1");
+                        if (!user) {
+                            console.log("getting here 2");
+                            return done(null, false, {
+                                message: "User not found"
+                            });
+                        }
+                        if (!user.validPassword(password)) {
+                            return done(null, false, {
+                                message: "Invalid Password"
+                            });
+                        }
+                        return done(null, user);
+                    });
+                } catch (error) {
+                    console.log("error from passport: ", error);
+                }
             }
         )
     );

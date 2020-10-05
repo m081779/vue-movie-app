@@ -22,15 +22,20 @@
                         name="password"
                     />
                 </div>
+                <p
+                    class="errorMessage"
+                    v-for="(message, index) in errorMessages"
+                    :key="index"
+                >
+                    {{ message }}
+                </p>
                 <v-btn @click="submit">
                     Login
                 </v-btn>
+
                 <hr />
                 <p>Need an account? <a href="/signup">Signup</a></p>
                 <p>Or go <a href="/">home</a>.</p>
-                <p v-for="(message, index) in errorMessages" :key="index">
-                    {{ message }}
-                </p>
             </v-card>
         </v-container>
     </v-content>
@@ -43,21 +48,29 @@ import axios from "axios";
 export default class Login extends Vue {
     email: string | null = null;
     password: string | null = null;
-    errorMessages = [];
+    errorMessages = [] as string[];
     async submit() {
         const { email, password } = this;
         console.log("firing", email, password);
-        const response = await axios.post("/login", {
-            email,
-            password
-        });
-        console.log("response: ", response.data);
-        if (response.status === 200) {
-            this.$router.push({
-                name: "dashboard"
+        try {
+            const response = await axios.post("/login", {
+                email,
+                password
             });
-        } else {
-            this.errorMessages = response.data.messages;
+            console.log("response: ", response.data);
+            if (response.status === 200) {
+                this.$router.push({
+                    name: "dashboard"
+                });
+            } else {
+                this.errorMessages = response.data.messages;
+                console.log("firinginsiedethe else", this.errorMessages);
+            }
+        } catch (error) {
+            this.errorMessages = [
+                "You have entered an incorrect username/password.  Please try again."
+            ];
+            console.log("error: ", error);
         }
     }
 }
