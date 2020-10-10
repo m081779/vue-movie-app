@@ -10,35 +10,12 @@ module.exports = (app, passport) => {
     // LOGIN ===============================
     // =====================================
     // process the login form
-    app.post("/login", passport.authenticate("local-login"), (req, res) => {
-        console.log("message: ", req.flash("loginMessage"));
-        const isAuthenticated = req.isAuthenticated();
-        if (!req.user || !isAuthenticated) {
-            res.json({
-                status: 400,
-                messages: req.flash("loginMessage"),
-                isAuthenticated
-            });
-            return;
-        }
-        User.findOne({ "local.email": req.user.local.email })
-            .populate("movies")
-            .then(user =>
-                res.json({
-                    status: 200,
-                    messages: req.flash("loginMessage"),
-                    movies: user.movies,
-                    user: user.local.email,
-                    isAuthenticated
-                })
-            )
-            .catch(() =>
-                res.json({
-                    status: 400,
-                    messages: "An error occurred, please try again later",
-                    isAuthenticated
-                })
-            );
+    app.post("/login", (req, res, next) => {
+        passport.authenticate("local-login", handleUserResponse(res))(
+            req,
+            res,
+            next
+        );
     });
 
     // =====================================
@@ -46,137 +23,155 @@ module.exports = (app, passport) => {
     // =====================================
     // show the signup form
     // render the page and pass in any flash data if it exists
-    app.get("/signup", (req, res) =>
-        res.render("signup.ejs", { message: req.flash("signupMessage") })
-    );
 
     // process the signup form
-    app.post(
-        "/signup",
-        passport.authenticate("local-signup", {
-            successRedirect: "/profile", // redirect to the secure profile section
-            failureRedirect: "/signup", // redirect back to the signup page if there is an error
-            failureFlash: true // allow flash messages
-        })
-    );
+    app.post("/signup", (req, res, next) => {
+        passport.authenticate("local-signup", handleUserResponse(res))(
+            req,
+            res,
+            next
+        );
+    });
 
     // =====================================
     // PROFILE SECTION =====================
     // =====================================
     // we will want this protected so you have to be logged in to visit
-    // we will use route middleware to verify this (the isLoggedIn function)
-    app.get("/profile", isLoggedIn, (req, res) => {
-        User.findOne({ "local.email": req.user.local.email })
-            .populate("movies")
-            .then(user =>
-                res.render("profile", {
-                    movies: user.movies,
-                    user: user.local.email
-                })
-            )
-            .catch(err => res.json(err));
-    });
+    // // we will use route middleware to verify this (the isLoggedIn function)
+    // app.get("/profile", isLoggedIn, (req, res) => {
+    //     User.findOne({ "local.email": req.user.local.email })
+    //         .populate("movies")
+    //         .then(user =>
+    //             res.render("profile", {
+    //                 movies: user.movies,
+    //                 user: user.local.email
+    //             })
+    //         )
+    //         .catch(err => res.json(err));
+    // });
 
     // =====================================
     // FACEBOOK ROUTES =====================
     // =====================================
     // route for facebook authentication and login
-    app.get(
-        "/auth/facebook",
-        passport.authenticate("facebook", {
-            scope: ["public_profile", "email"]
-        })
-    );
+    // app.get(
+    //     "/auth/facebook",
+    //     passport.authenticate("facebook", {
+    //         scope: ["public_profile", "email"]
+    //     })
+    // );
 
-    // handle the callback after facebook has authenticated the user
-    app.get(
-        "/auth/facebook/callback",
-        passport.authenticate("facebook", {
-            successRedirect: "/profile",
-            failureRedirect: "/"
-        })
-    );
+    // // handle the callback after facebook has authenticated the user
+    // app.get(
+    //     "/auth/facebook/callback",
+    //     passport.authenticate("facebook", {
+    //         successRedirect: "/profile",
+    //         failureRedirect: "/"
+    //     })
+    // );
 
-    // =============================================================================
-    // AUTHORIZE (ALREADY LOGGED IN / CONNECTING OTHER SOCIAL ACCOUNT) =============
-    // =============================================================================
+    // // =============================================================================
+    // // AUTHORIZE (ALREADY LOGGED IN / CONNECTING OTHER SOCIAL ACCOUNT) =============
+    // // =============================================================================
 
-    // locally --------------------------------
-    app.get("/connect/local", (req, res) =>
-        res.render("connect-local.ejs", { message: req.flash("loginMessage") })
-    );
+    // // locally --------------------------------
+    // app.get("/connect/local", (req, res) =>
+    //     res.render("connect-local.ejs", { message: req.flash("loginMessage") })
+    // );
 
-    app.post(
-        "/connect/local",
-        passport.authenticate("local-signup", {
-            successRedirect: "/profile", // redirect to the secure profile section
-            failureRedirect: "/connect/local", // redirect back to the signup page if there is an error
-            failureFlash: true // allow flash messages
-        })
-    );
+    // app.post(
+    //     "/connect/local",
+    //     passport.authenticate("local-signup", {
+    //         successRedirect: "/profile", // redirect to the secure profile section
+    //         failureRedirect: "/connect/local", // redirect back to the signup page if there is an error
+    //         failureFlash: true // allow flash messages
+    //     })
+    // );
 
-    // facebook -------------------------------
+    // // facebook -------------------------------
 
-    // send to facebook to do the authentication
-    app.get(
-        "/connect/facebook",
-        passport.authorize("facebook", {
-            scope: ["public_profile", "email"]
-        })
-    );
+    // // send to facebook to do the authentication
+    // app.get(
+    //     "/connect/facebook",
+    //     passport.authorize("facebook", {
+    //         scope: ["public_profile", "email"]
+    //     })
+    // );
 
-    // handle the callback after facebook has authorized the user
-    app.get(
-        "/connect/facebook/callback",
-        passport.authorize("facebook", {
-            successRedirect: "/profile",
-            failureRedirect: "/"
-        })
-    );
+    // // handle the callback after facebook has authorized the user
+    // app.get(
+    //     "/connect/facebook/callback",
+    //     passport.authorize("facebook", {
+    //         successRedirect: "/profile",
+    //         failureRedirect: "/"
+    //     })
+    // );
 
-    // =====================================
-    // LOGOUT ==============================
-    // =====================================
-    app.get("/logout", (req, res) => {
-        req.logout();
-        req.session.destroy(err => {
-            if (!err) {
-                res.clearCookie("connect.sid", { path: "/" }).redirect("/");
-            } else {
-                console.log("Error from session destroy:", err);
-            }
+    // // =====================================
+    // // LOGOUT ==============================
+    // // =====================================
+    // app.get("/logout", (req, res) => {
+    //     req.logout();
+    //     req.session.destroy(err => {
+    //         if (!err) {
+    //             res.clearCookie("connect.sid", { path: "/" }).redirect("/");
+    //         } else {
+    //             console.log("Error from session destroy:", err);
+    //         }
+    //     });
+    // });
+
+    // //==================================================================
+    // // Movie Routes ====================================================
+    // //==================================================================
+    // //post api route inserts movie in to database
+    // app.post("/api/movie", (req, res) => {
+    //     let newMovie = new Movie({
+    //         movie_name: req.body.movie_name,
+    //         addedAt: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
+    //         watchedAt: ""
+    //     });
+    //     Movie.create(newMovie)
+    //         .then(result => {
+    //             User.findOneAndUpdate(
+    //                 { "local.email": req.user.local.email },
+    //                 { $push: { movies: result._id } }
+    //             )
+    //                 .then(response => res.sendStatus(200))
+    //                 .catch(err => res.json(err));
+    //         })
+    //         .catch(err => res.json(err));
+    // });
+
+    // //put api route modifies watched boolean of selected movie
+    // app.put("/api/:movie", (req, res) => {
+    //     const id = req.params.movie,
+    //         watchedAt = moment(new Date()).format("MM-DD-YYYY, h:mm a");
+    //     Movie.update({ _id: id }, { watchedAt: watchedAt, watched: true })
+    //         .then(result => res.sendStatus(200).end())
+    //         .catch(err => res.json(err));
+    // });
+};
+
+const handleUserResponse = res => (err, user, info) => {
+    console.log("user: ", user);
+    if (err) return next(err);
+    if (!user) {
+        res.json({
+            status: 401,
+            messages: [info.message],
+            movies: null,
+            user: null,
+            isAuthenticated: false
         });
-    });
-
-    //==================================================================
-    // Movie Routes ====================================================
-    //==================================================================
-    //post api route inserts movie in to database
-    app.post("/api/movie", (req, res) => {
-        let newMovie = new Movie({
-            movie_name: req.body.movie_name,
-            addedAt: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
-            watchedAt: ""
-        });
-        Movie.create(newMovie)
-            .then(result => {
-                User.findOneAndUpdate(
-                    { "local.email": req.user.local.email },
-                    { $push: { movies: result._id } }
-                )
-                    .then(response => res.sendStatus(200))
-                    .catch(err => res.json(err));
-            })
-            .catch(err => res.json(err));
-    });
-
-    //put api route modifies watched boolean of selected movie
-    app.put("/api/:movie", (req, res) => {
-        const id = req.params.movie,
-            watchedAt = moment(new Date()).format("MM-DD-YYYY, h:mm a");
-        Movie.update({ _id: id }, { watchedAt: watchedAt, watched: true })
-            .then(result => res.sendStatus(200).end())
-            .catch(err => res.json(err));
+        return;
+    }
+    res.json({
+        status: 200,
+        messages: [],
+        movies: user.movies,
+        user: user.local.email,
+        isAuthenticated: true
     });
 };
 

@@ -33,29 +33,23 @@ module.exports = passport => {
             },
             (req, email, password, done) => {
                 process.nextTick(() => {
-                    User.findOne({ "local.email": email }, (err, user) => {
+                    User.find({ "local.email": email }, (err, user) => {
                         if (err) return done(err);
 
-                        if (user) {
-                            return done(
-                                null,
-                                false,
-                                req.flash(
-                                    "signupMessage",
-                                    "That email is already taken."
-                                )
-                            );
-                        } else {
+                        if (Array.isArray(user) && user.length === 0) {
                             const newUser = new User();
                             newUser.local.email = email;
                             newUser.local.password = newUser.generateHash(
                                 password
                             );
-
                             // save the user
                             newUser.save(err => {
                                 if (err) throw err;
                                 return done(null, newUser);
+                            });
+                        } else {
+                            return done(null, false, {
+                                message: "That email is already taken."
                             });
                         }
                     });
@@ -81,24 +75,26 @@ module.exports = passport => {
             (req, email, password, done) => {
                 // callback with email and password from our form
                 try {
-                    User.findOne({ "local.email": email }, (err, user) => {
-                        if (err) return done(err);
-                        console.log("getting here 1");
-                        if (!user) {
-                            console.log("getting here 2");
-                            return done(null, false, {
-                                message: "User not found"
-                            });
-                        }
-                        if (!user.validPassword(password)) {
-                            return done(null, false, {
-                                message: "Invalid Password"
-                            });
-                        }
-                        return done(null, user);
-                    });
+                    User.findOne({ "local.email": email })
+                        .populate("movies")
+                        .then(user => {
+                            if (!user) {
+                                return done(null, false, {
+                                    message: "User not found"
+                                });
+                            }
+                            if (!user.validPassword(password)) {
+                                return done(null, false, {
+                                    message: "Invalid Password"
+                                });
+                            }
+                            return done(null, user);
+                        });
                 } catch (error) {
                     console.log("error from passport: ", error);
+                    return done(null, false, {
+                        message: "There was an error with your request."
+                    });
                 }
             }
         )

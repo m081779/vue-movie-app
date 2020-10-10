@@ -3,12 +3,8 @@
         <v-container>
             <v-card>
                 <h1 class="brand-header">
-                    <span class="fa fa-sign-in"></span> Login
+                    <span class="fa fa-sign-in"></span> Create an account
                 </h1>
-                <!-- show any messages that come back with authentication -->
-                <!-- <% if (message.length > 0) { %>
-                <div class="alert alert-danger"><%= message %></div>
-                <% } %> -->
 
                 <div class="form-group">
                     <label>Email:</label>
@@ -45,7 +41,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import axios from "axios";
 @Component({})
-export default class Login extends Vue {
+export default class Signup extends Vue {
     email: string | null = null;
     password: string | null = null;
     errorMessages = [] as string[];
@@ -53,7 +49,7 @@ export default class Login extends Vue {
         const { email, password } = this;
         console.log("firing", email, password);
         try {
-            const response = await axios.post("/login", {
+            const response = await axios.post("/signup", {
                 email,
                 password
             });
@@ -68,7 +64,7 @@ export default class Login extends Vue {
             }
         } catch (error) {
             this.errorMessages = [
-                "There has been an error with your request.  Please try again."
+                "There has been an error with your request. Please try again."
             ];
             console.log("error: ", error);
         }

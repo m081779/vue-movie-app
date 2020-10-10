@@ -13,6 +13,7 @@ const app = express();
 //setting up body parser middleware to handle post requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.set("json spaces", 2);
 
 // Import and Set Nuxt.js options
 const config = require("../nuxt.config.js");
