@@ -1,38 +1,46 @@
 <template>
     <v-content>
         <v-container>
-            <v-card>
-                <h1 class="brand-header">
-                    <span class="fa fa-sign-in"></span> Create an account
-                </h1>
+            <v-row justify="center" class="mt-10">
+                <v-col cols="8" offset="2">
+                    <v-card class="pt-10">
+                        <h1 class="brand-header text-center">
+                            <span class="fa fa-sign-in"></span> Create an
+                            account
+                        </h1>
 
-                <div class="form-group">
-                    <label>Email:</label>
-                    <v-text-field v-model="email" name="email" />
-                </div>
-                <div class="form-group">
-                    <label>Password:</label>
-                    <v-text-field
-                        v-model="password"
-                        type="password"
-                        name="password"
-                    />
-                </div>
-                <p
-                    class="errorMessage"
-                    v-for="(message, index) in errorMessages"
-                    :key="index"
-                >
-                    {{ message }}
-                </p>
-                <v-btn @click="submit">
-                    Login
-                </v-btn>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <v-text-field v-model="email" name="email" />
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <v-text-field
+                                v-model="password"
+                                type="password"
+                                name="password"
+                            />
+                        </div>
+                        <p
+                            class="errorMessage"
+                            v-for="(message, index) in errorMessages"
+                            :key="index"
+                        >
+                            {{ message }}
+                        </p>
+                        <v-btn @click="submit" block class="login-button">
+                            Create Account
+                        </v-btn>
 
-                <hr />
-                <p>Need an account? <a href="/signup">Signup</a></p>
-                <p>Or go <a href="/">home</a>.</p>
-            </v-card>
+                        <hr />
+                        <p>
+                            Already have an account? Log in
+                            <a href="/login"> here</a>
+                        </p>
+                        <p>Or go <a href="/">Home</a>.</p>
+                    </v-card>
+                </v-col>
+            </v-row>
         </v-container>
     </v-content>
 </template>
@@ -72,4 +80,23 @@ export default class Signup extends Vue {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.login-button {
+    background: rgb(153, 35, 35) !important;
+    color: white;
+}
+.v-card {
+    padding: 20px;
+    margin-top: 75px;
+}
+.v-btn {
+    margin-bottom: 20px;
+}
+.v-text-field {
+    margin-top: 0;
+    padding-top: 0;
+}
+.brand-header {
+    color: rgba(0, 0, 0, 0.7) !important;
+}
+</style>
