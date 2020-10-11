@@ -12,15 +12,15 @@ module.exports = {
             { charset: "utf-8" },
             {
                 name: "viewport",
-                content: "width=device-width, initial-scale=1",
+                content: "width=device-width, initial-scale=1"
             },
             {
                 hid: "description",
                 name: "description",
-                content: process.env.npm_package_description || "",
-            },
+                content: process.env.npm_package_description || ""
+            }
         ],
-        link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+        link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
     },
     /*
      ** Customize the progress-bar color
@@ -49,8 +49,17 @@ module.exports = {
     vuetify: {
         customVariables: ["~/assets/css/variables.scss"],
         theme: {
-            dark: true,
+            light: true,
             themes: {
+                light: {
+                    primary: colors.blue.lighten2,
+                    accent: colors.grey.lighten3,
+                    secondary: colors.amber.lighten3,
+                    info: colors.teal.lighten1,
+                    warning: colors.amber.base,
+                    error: colors.deepOrange.accent4,
+                    success: colors.green.accent3
+                },
                 dark: {
                     primary: colors.blue.darken2,
                     accent: colors.grey.darken3,
@@ -58,10 +67,10 @@ module.exports = {
                     info: colors.teal.lighten1,
                     warning: colors.amber.base,
                     error: colors.deepOrange.accent4,
-                    success: colors.green.accent3,
-                },
-            },
-        },
+                    success: colors.green.accent3
+                }
+            }
+        }
     },
     /*
      ** Build configuration
@@ -70,6 +79,6 @@ module.exports = {
         /*
          ** You can extend webpack config here
          */
-        extend(config, ctx) {},
-    },
+        extend(config, ctx) {}
+    }
 };
